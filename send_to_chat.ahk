@@ -27,13 +27,14 @@ questDict := { "Quest 001": "みーつけた！"
              , "Quest 516": "サインください"
              , "Quest 531": "ようせいさん　ようせいさん"
              , "Quest 580": "ギリウスへいか　ばんざい"
+             , "Quest 581": "おくすりのじかんです"
              , "Quest 606": "ベントラー"
              , "Quest 608": "デスマスターはしなない"
              , "Quest 616": "げいじゅつはマデッサンスなり"
              , "Quest 627": "ガッタバ・ヨナクーン"
              , "Quest 660": "まじんのもんよひらけ"
              , "Quest 672": "ことばトハ　いしナリ"
-			 , "Quest 709": "てんそうしがらん" }
+             , "Quest 709": "てんそうしがらん" }
 
 seasonalDict := { "Halloween Quest": "トリックオアトリート"
                 , "Christmas Quest": "メリークリスマス" }
@@ -47,27 +48,28 @@ commonPhrasesDict := { "Thank you!": "ありがとう！"
                      , "Good job.": "おつかれさまでした"
                      , "Sorry.": "ごめんなさい"
                      , "Are you ready?": "準備OK?"
-					 , "I'll do my best!": "がんばります！"	
-					 , "I understand.": "わかりました"}
+                     , "I'll do my best!": "がんばります！"
+                     , "I understand.": "わかりました"}
 
 ; These will change on patches
-chatAddress := 0x01F5F958
+chatAddress := 0x01F77A1C
 chatOffsets := [0x364, 0xFC, 0x0, 0x10, 0x0, 0x10]
+nameAddress := 0x01F76CF0
+nameOffsets := [0x34, 0xB0, 0xE4, 0x30, 0xFC, 0x4, 0x10, 0x0, 0x10]
 
 Gui, 1:Default
-Gui, Add, Tab3,, General|Quests|Seasonals|Common Phrases
+Gui, Add, Tab3,, General|Quests|Seasonals|Common Phrases|Storage Name
 Gui, Font, s16, Segoe UI
 Gui, Add, Text,, What is this?
 Gui, Font, s12, Segoe UI
 Gui, Add, Text,, A small program to get around no copy/paste support in DQX.
-Gui, Add, Text,y+1, Helpful for quests where you need to type Japanese to proceed,`n  but you don't know how. :(
+Gui, Add, Text,y+1, Helpful for quests where you need to type Japanese to proceed, but`n you don't know how.  :(
 Gui, Font, s16, Segoe UI
 Gui, Add, Text,, How to use:
 Gui, Font, s12, Segoe UI
-Gui, Add, Link,, - Open DQX with something like <a href="https://xupefei.github.io/Locale-Emulator/">Locale Emulator</a> to allow typing in`n    Japanese (you don't need the Japanese IME keyboard active for this)
 Gui, Add, Text,y+1, - Open a fresh chat box in game and switch to the desired chat category
-Gui, Add, Text,y+1, - Bring this program into focus and paste the Japanese text you want to `n    send to DQX
-Gui, Add, Text,y+1, - Click 'Send to DQX'. The program will move your DQX chat cursor to`n    the appropriate position and send the text into the DQX chat window
+Gui, Add, Text,y+1, - Bring this program into focus and paste the Japanese text you want to`n   send to DQX
+Gui, Add, Text,y+1, - Click 'Send to DQX'. The program will move your DQX chat cursor to`n   the appropriate position and send the text into the DQX chat window
 Gui, Add, Edit, r1 vTextToSend w500, %textToSend%
 Gui, Add, Button, gSend, Send to DQX
 Gui, Add, Button, gCloseApp x+295, Exit Program
@@ -78,11 +80,11 @@ For index, value in questDict
   If (A_Index < 11)
     Gui, Add, Button, gQuestSend, %index%
   Else If (A_Index = 11)
-    Gui, Add, Button, gQuestSend x+10 y58, %index%
+    Gui, Add, Button, gQuestSend x+10 y79, %index%
   Else If (A_Index > 11 and A_Index < 21)
     Gui, Add, Button, gQuestSend, %index%
   Else If (A_Index = 21)
-    Gui, Add, Button, gQuestSend x+20 y58, %index%
+    Gui, Add, Button, gQuestSend x+20 y79, %index%
   Else If (A_Index > 21 and A_Index < 31)
     Gui, Add, Button, gQuestSend, %index%
 
@@ -97,14 +99,31 @@ For index, value in commonPhrasesDict
   If (A_Index < 11)
     Gui, Add, Button, gPhraseSend, %index%
   Else If (A_Index = 11)
-    Gui, Add, Button, gPhraseSend x+10 y58, %index%
+    Gui, Add, Button, gPhraseSend x+100 y79, %index%
   Else If (A_Index > 11 and A_Index < 21)
     Gui, Add, Button, gPhraseSend, %index%
   Else If (A_Index = 21)
-    Gui, Add, Button, gPhraseSend x+20 y58, %index%
+    Gui, Add, Button, gPhraseSend x+100 y79, %index%
   Else If (A_Index > 21 and A_Index < 31)
     Gui, Add, Button, gPhraseSend, %index%
 
+Gui, Tab, Storage Name
+Gui, Font, s16, Segoe UI
+Gui, Add, Text,, Change the name of your storage.
+Gui, Font, s12, Segoe UI
+Gui, Add, Text,y+1, - Go to a depository and select the option 'Change Name'.
+Gui, Add, Text,y+1, - Select the Storage that you would like to change.
+Gui, Add, Text,y+1, - The cursor will be in the name text box at this point.
+Gui, Add, Text,y+1, - Enter the name you want below.
+Gui, Add, Text,y+1, - Click 'Send to DQX'. The program will enter the name into the text box.
+Gui, Add, Text,y+1, - Press the button mapped to 'Confirm' on your controller.`n    (Using a keyboard won't work properly)
+Gui, Add, Text,y+1, - Finally, select the confirm option in game. The storage is now renamed.
+Gui, Font, s14, Segoe UI
+Gui, Add, Text,x20 y+10, Maximum 8 Characters
+Gui, Add, Text,x20 y+1, Alphanumeric characters, dashes and spaces only.
+Gui, Font, s12, Segoe UI
+Gui, Add, Edit, r1 vNameToSend w500, %NameToSend%
+Gui, Add, Button, gStorageSend, Send to DQX
 
 Gui, +alwaysontop
 Gui, Show, Autosize
@@ -219,3 +238,60 @@ PhraseSend:
     msgBox "DQX window not found."
   }
   Return
+  
+StorageSend:
+  GuiControlGet, NameToSend
+  numChars := StrLen(NameToSend)
+  if (numChars > 8){
+    {
+      MsgBox, 4096, Attention!, Name must be 8 characters or less!
+    }
+  Return
+  }
+  else If RegExMatch(NameToSend, "[^a-zA-Z0-9\s\-]"){
+    {
+      MsgBox, 4096, Attention!, Name must contain letters, numbers, dashes and spaces only!
+    }
+  Return
+  }
+  else
+  {
+    NameToSend := replaceHalfwidth(NameToSend)
+    replaceHalfwidth(NameToSend) {
+      NameToSend := StrReplace(NameToSend, "`r`n`", "")
+      StringCaseSense, On
+      Loop, 26
+      {
+        NameToSend := StrReplace(NameToSend, Chr(65 - 1 + A_Index), Chr(65313 - 1 + A_Index))
+        NameToSend := StrReplace(NameToSend, Chr(97 - 1 + A_Index), Chr(65345 - 1 + A_Index))
+      }
+      Loop, 10
+      {
+        NameToSend := StrReplace(NameToSend, Chr(48 - 1 + A_Index), Chr(65296 - 1 + A_Index))
+      }
+      NameToSend := StrReplace(NameToSend, Chr(45), Chr(12540))
+      NameToSend := StrReplace(NameToSend, Chr(32), Chr(12288))
+      return, NameToSend
+    }
+    StringCaseSense, Off
+    hexName := convertStrToHex(NameToSend)
+    addByte := 00
+    num_bytes_to_add := 25 - (numChars * 3)
+    loop, %num_bytes_to_add%
+    {
+      hexName = %hexName%%addByte%
+    }
+    Process, Exist, DQXGame.exe
+    if ErrorLevel
+    {
+      WinActivate, ahk_exe DQXGame.exe
+      dqx := new _ClassMemory("ahk_exe DQXGame.exe", "", hProcessCopy)
+      baseAddress := dqx.getProcessBaseAddress("ahk_exe DQXGame.exe")
+      dqx.writeBytes(baseAddress + nameAddress, hexName, nameOffsets*)
+    }
+    else
+    {
+      msgBox "DQX window not found."
+    }
+    Return
+  }

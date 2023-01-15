@@ -22,8 +22,8 @@ questDict := { "Quest 001": "みーつけた！"
              , "Quest 453": "マイユさーん！"
              , "Quest 480": "モモンタル"
              , "Quest 496": "るるるんぽう"
-             , "Quest 505a": "おおきくなあれ！タネタネきゅん！"
-             , "Quest 505b": "てんまでとどけ！タネきゅんきゅん"
+             , "Quest 505 (1)": "おおきくなあれ！タネタネきゅん！"
+             , "Quest 505 (2)": "てんまでとどけ！タネきゅんきゅん"
              , "Quest 516": "サインください"
              , "Quest 531": "ようせいさん　ようせいさん"
              , "Quest 580": "ギリウスへいか　ばんざい"
@@ -34,7 +34,15 @@ questDict := { "Quest 001": "みーつけた！"
              , "Quest 627": "ガッタバ・ヨナクーン"
              , "Quest 660": "まじんのもんよひらけ"
              , "Quest 672": "ことばトハ　いしナリ"
-             , "Quest 709": "てんそうしがらん" }
+             , "Quest 709": "てんそうしがらん"
+			 , "Version 3.2": "おままごとしましょー"
+			 , "Version 3.3 (1)": "にんげん"
+			 , "Version 3.3 (2)": "われワギにちかう"
+			 , "Version 3.4": "みのり"
+			 , "Version 5.2": "リドよめざめよ"
+			 , "Version 5.5": "リドよわがともよ"
+			 , "Version 6.1": "むすすへえまめともりかひしうとんさられわ" }
+			 
 
 seasonalDict := { "Halloween Quest": "トリックオアトリート"
                 , "Christmas Quest": "メリークリスマス" }
@@ -63,7 +71,7 @@ Gui, Font, s16, Segoe UI
 Gui, Add, Text,, What is this?
 Gui, Font, s12, Segoe UI
 Gui, Add, Text,, A small program to get around no copy/paste support in DQX.
-Gui, Add, Text,y+1, Helpful for quests where you need to type Japanese to proceed, but`n you don't know how.  :(
+Gui, Add, Text,y+1, Helpful for quests where you need to type Japanese to proceed, but`nyou don't know how.  :(
 Gui, Font, s16, Segoe UI
 Gui, Add, Text,, How to use:
 Gui, Font, s12, Segoe UI
@@ -87,6 +95,10 @@ For index, value in questDict
     Gui, Add, Button, gQuestSend x+20 y79, %index%
   Else If (A_Index > 21 and A_Index < 31)
     Gui, Add, Button, gQuestSend, %index%
+  Else If (A_Index = 31)
+	Gui, Add, Button, gQuestSend x+30 y79, %index%
+  Else If (A_Index > 31 and A_Index < 41)
+	Gui, Add, Button, gQuestSend, %index%
 
 Gui, Tab, Seasonals
 Gui, Add, Text,, Press a button to enter what you need to say to continue the quest.

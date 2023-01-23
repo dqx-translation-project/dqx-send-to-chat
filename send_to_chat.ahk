@@ -35,14 +35,13 @@ questDict := { "Quest 001": "みーつけた！"
              , "Quest 660": "まじんのもんよひらけ"
              , "Quest 672": "ことばトハ　いしナリ"
              , "Quest 709": "てんそうしがらん"
-			 , "Version 3.2": "おままごとしましょー"
-			 , "Version 3.3 (1)": "にんげん"
-			 , "Version 3.3 (2)": "われワギにちかう"
-			 , "Version 3.4": "みのり"
-			 , "Version 5.2": "リドよめざめよ"
-			 , "Version 5.5": "リドよわがともよ"
-			 , "Version 6.1": "むすすへえまめともりかひしうとんさられわ" }
-			 
+             , "Version 3.2": "おままごとしましょー"
+             , "Version 3.3 (1)": "にんげん"
+             , "Version 3.3 (2)": "われワギにちかう"
+             , "Version 3.4": "みのり"
+             , "Version 5.2": "リドよめざめよ"
+             , "Version 5.5": "リドよわがともよ"
+             , "Version 6.1": "むすすへえまめともりかひしうとんさられわ" }
 
 seasonalDict := { "Halloween Quest": "トリックオアトリート"
                 , "Christmas Quest": "メリークリスマス" }
@@ -96,9 +95,9 @@ For index, value in questDict
   Else If (A_Index > 21 and A_Index < 31)
     Gui, Add, Button, gQuestSend, %index%
   Else If (A_Index = 31)
-	Gui, Add, Button, gQuestSend x+30 y79, %index%
+    Gui, Add, Button, gQuestSend x+30 y79, %index%
   Else If (A_Index > 31 and A_Index < 41)
-	Gui, Add, Button, gQuestSend, %index%
+    Gui, Add, Button, gQuestSend, %index%
 
 Gui, Tab, Seasonals
 Gui, Add, Text,, Press a button to enter what you need to say to continue the quest.
@@ -146,6 +145,7 @@ CloseApp:
 
 Send:
   GuiControlGet, TextToSend
+  text_len := StrLen(TextToSend)
   sanitizedBytes := StrReplace(convertStrToHex(textToSend), "`r`n", "")
   numberToArrowOver := StrLen(sanitizedBytes) // 2
 
@@ -163,6 +163,19 @@ Send:
     dqx := new _ClassMemory("ahk_exe DQXGame.exe", "", hProcessCopy)
     baseAddress := dqx.getProcessBaseAddress("ahk_exe DQXGame.exe")
     dqx.writeBytes(baseAddress + chatAddress, convertStrToHex(textToSend), chatOffsets*)
+    if (text_len > 13)
+    {
+      Loop, 15 {
+        Sleep 50
+        Send {Space}
+      }
+      dqx.writeBytes(baseAddress + chatAddress, convertStrToHex(TextToSend), chatOffsets*)
+      Loop, 8 {
+        Sleep 50
+        Send {Space}
+      }
+      dqx.writeBytes(baseAddress + chatAddress, convertStrToHex(TextToSend), chatOffsets*)
+    }
   }
   else
   {
@@ -173,6 +186,7 @@ Send:
 QuestSend:
   GuiControlGet, getQuestNumber,, % A_GuiControl
   questText := questDict[getQuestNumber]
+  text_len := StrLen(questText)
   sanitizedBytes := StrReplace(convertStrToHex(questText), "`r`n", "")
   numberToArrowOver := StrLen(sanitizedBytes) // 2
 
@@ -190,6 +204,19 @@ QuestSend:
     dqx := new _ClassMemory("ahk_exe DQXGame.exe", "", hProcessCopy)
     baseAddress := dqx.getProcessBaseAddress("ahk_exe DQXGame.exe")
     dqx.writeBytes(baseAddress + chatAddress, convertStrToHex(questText), chatOffsets*)
+    if (text_len > 13)
+    {
+      Loop, 15 {
+        Sleep 50
+        Send {Space}
+      }
+      dqx.writeBytes(baseAddress + chatAddress, convertStrToHex(questText), chatOffsets*)
+      Loop, 8 {
+        Sleep 50
+        Send {Space}
+      }
+      dqx.writeBytes(baseAddress + chatAddress, convertStrToHex(questText), chatOffsets*)
+    }
   }
   else
   {
@@ -200,6 +227,7 @@ QuestSend:
 SeasonalSend:
   GuiControlGet, getQuestNumber,, % A_GuiControl
   questText := seasonalDict[getQuestNumber]
+  text_len := StrLen(questText)
   sanitizedBytes := StrReplace(convertStrToHex(questText), "`r`n", "")
   numberToArrowOver := StrLen(sanitizedBytes) // 2
 
@@ -217,6 +245,19 @@ SeasonalSend:
     dqx := new _ClassMemory("ahk_exe DQXGame.exe", "", hProcessCopy)
     baseAddress := dqx.getProcessBaseAddress("ahk_exe DQXGame.exe")
     dqx.writeBytes(baseAddress + chatAddress, convertStrToHex(questText), chatOffsets*)
+    if (text_len > 13)
+    {
+      Loop, 15 {
+        Sleep 50
+        Send {Space}
+      }
+      dqx.writeBytes(baseAddress + chatAddress, convertStrToHex(questText), chatOffsets*)
+      Loop, 8 {
+        Sleep 50
+        Send {Space}
+      }
+      dqx.writeBytes(baseAddress + chatAddress, convertStrToHex(questText), chatOffsets*)
+    }
   }
   else
   {
@@ -227,6 +268,7 @@ SeasonalSend:
 PhraseSend:
   GuiControlGet, getPhrase,, % A_GuiControl
   phraseText := commonPhrasesDict[getPhrase]
+  text_len := StrLen(phraseText)
   sanitizedBytes := StrReplace(convertStrToHex(phraseText), "`r`n", "")
   numberToArrowOver := StrLen(sanitizedBytes) // 2
 
@@ -244,13 +286,26 @@ PhraseSend:
     dqx := new _ClassMemory("ahk_exe DQXGame.exe", "", hProcessCopy)
     baseAddress := dqx.getProcessBaseAddress("ahk_exe DQXGame.exe")
     dqx.writeBytes(baseAddress + chatAddress, convertStrToHex(phraseText), chatOffsets*)
+    if (text_len > 13)
+    {
+      Loop, 15 {
+        Sleep 50
+        Send {Space}
+      }
+      dqx.writeBytes(baseAddress + chatAddress, convertStrToHex(phraseText), chatOffsets*)
+      Loop, 8 {
+        Sleep 50
+        Send {Space}
+      }
+      dqx.writeBytes(baseAddress + chatAddress, convertStrToHex(phraseText), chatOffsets*)
+    }
   }
   else
   {
     msgBox "DQX window not found."
   }
   Return
-  
+
 StorageSend:
   GuiControlGet, NameToSend
   numChars := StrLen(NameToSend)

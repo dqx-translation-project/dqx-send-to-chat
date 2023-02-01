@@ -59,9 +59,9 @@ commonPhrasesDict := { "Thank you!": "ありがとう！"
                      , "I understand.": "わかりました"}
 
 ; These will change on patches
-chatAddress := 0x01F77A1C
+chatAddress := 0x01F87A5C
 chatOffsets := [0x364, 0xFC, 0x0, 0x10, 0x0, 0x10]
-nameAddress := 0x01F76CF0
+nameAddress := 0x01F86D30
 nameOffsets := [0x34, 0xB0, 0xE4, 0x30, 0xFC, 0x4, 0x10, 0x0, 0x10]
 
 Gui, 1:Default

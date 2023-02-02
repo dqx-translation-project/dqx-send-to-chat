@@ -44,7 +44,9 @@ questDict := { "Quest 001": "みーつけた！"
              , "Version 6.1": "むすすへえまめともりかひしうとんさられわ" }
 
 seasonalDict := { "Halloween Quest": "トリックオアトリート"
-                , "Christmas Quest": "メリークリスマス" }
+                , "Christmas Quest": "メリークリスマス" 
+				, "Valentine's Quest": "ハッピーバレンタイン" 
+				, "White Day Quest": "ハッピーホワイトデー" }
 
 commonPhrasesDict := { "Thank you!": "ありがとう！"
                      , "Hello!": "こんにちは！"

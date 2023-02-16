@@ -85,7 +85,7 @@ Gui, Add, Text,, How to use:
 Gui, Font, s12, Segoe UI
 Gui, Add, Text,y+1, - Open a fresh chat box in game and switch to the desired chat category
 Gui, Add, Text,y+1, - Bring this program into focus and paste the Japanese text you want to`n   send to DQX
-Gui, Add, Text,y+1, - Click 'Send to DQX'. The program will move your DQX chat cursor to`n   the appropriate position and send the text into the DQX chat window
+Gui, Add, Text,y+1, - Click 'Send to DQX'. The program will move your DQX chat cursor to`n   the appropriate position and send the text into the DQX chat window.`n- Note: If you're trying to send using the latin alphabet, things will`n   look weird! This is intended to send Japanese characters
 Gui, Add, Edit, r1 vTextToSend w500, %textToSend%
 Gui, Add, Button, gSend, Send to DQX
 Gui, Add, Button, gCloseApp x+295, Exit Program
@@ -154,40 +154,12 @@ CloseApp:
 
 Send:
   GuiControlGet, TextToSend
-  text_len := StrLen(TextToSend)
-  sanitizedBytes := StrReplace(convertStrToHex(textToSend), "`r`n", "")
-  numberToArrowOver := StrLen(sanitizedBytes) // 2
 
   Process, Exist, DQXGame.exe
   if ErrorLevel
-  {
-    WinActivate, ahk_exe DQXGame.exe
-    ;; Have to move the chat cursor to the position to where it should be for the text to send correctly
-    Loop {
-      Sleep 50
-      Send {Right}
-    }
-    Until A_Index = numberToArrowOver
-
-    dqx.writeBytes(baseAddress + chatAddress, convertStrToHex(textToSend), chatOffsets*)
-    if (text_len > 13)
-    {
-      Loop, 15 {
-        Sleep 50
-        Send {Space}
-      }
-      dqx.writeBytes(baseAddress + chatAddress, convertStrToHex(TextToSend), chatOffsets*)
-      Loop, 8 {
-        Sleep 50
-        Send {Space}
-      }
-      dqx.writeBytes(baseAddress + chatAddress, convertStrToHex(TextToSend), chatOffsets*)
-    }
-  }
+    WriteToDQX(TextToSend)
   else
-  {
     msgBox "DQX window not found."
-  }
   Return
 
 QuestSend:
@@ -218,7 +190,7 @@ PhraseSend:
 
   Process, Exist, DQXGame.exe
   if ErrorLevel
-    WriteToDQX(seasonalText)
+    WriteToDQX(phraseText)
   else
     msgBox "DQX window not found."
   Return
@@ -296,5 +268,14 @@ WriteToDQX(textToSend)
       startAddress := dqx.getAddressFromOffsets(baseAddress + chatAddress, chatOffsets*)
     dqx.writeBytes(startAddress, convertStrToHex(A_LoopField))
     startAddress := startAddress + 3 ; We do this as each JP character takes 3 bytes.
+    ; For phrases that use all 20 available JP characters in the chatbox,
+    ; we need to arrow over to the left once, and then back to the right to
+    ; get it to properly send.
+    if (A_Index = 20)
+    {
+      Send {Left}
+      Sleep 50
+      Send {Right}
+    }
   }
 }

@@ -295,6 +295,6 @@ WriteToDQX(textToSend)
     if (A_Index = 1)
       startAddress := dqx.getAddressFromOffsets(baseAddress + chatAddress, chatOffsets*)
     dqx.writeBytes(startAddress, convertStrToHex(A_LoopField))
-    startAddress := startAddress + 3
+    startAddress := startAddress + 3 ; We do this as each JP character takes 3 bytes.
   }
 }

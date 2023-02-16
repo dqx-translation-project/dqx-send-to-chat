@@ -39,18 +39,18 @@ questDict := { "Quest 001": "みーつけた！"
              , "Version 3.3 (1)": "にんげん"
              , "Version 3.3 (2)": "われワギにちかう"
              , "Version 3.4": "みのり"
-			 , "Version 4.4 (1)": "よろこびのそのであおう"
-			 , "Version 4.4 (2)": "フォステイルが！"
-			 , "Version 4.5": "ユマテルのカギ"
+             , "Version 4.4 (1)": "よろこびのそのであおう"
+             , "Version 4.4 (2)": "フォステイルが！"
+             , "Version 4.5": "ユマテルのカギ"
              , "Version 5.2 (1)": "リドよめざめよ"
-			 , "Version 5.2 (2)": "われじゆうをもとむ"
+             , "Version 5.2 (2)": "われじゆうをもとむ"
              , "Version 5.5": "リドよわがともよ"
              , "Version 6.1": "むすすへえまめともりかひしうとんさられわ" }
 
 seasonalDict := { "Halloween Quest": "トリックオアトリート"
                 , "Christmas Quest": "メリークリスマス" 
-				, "Valentine's Quest": "ハッピーバレンタイン" 
-				, "White Day Quest": "ハッピーホワイトデー" }
+                , "Valentine's Quest": "ハッピーバレンタイン" 
+                , "White Day Quest": "ハッピーホワイトデー" }
 
 commonPhrasesDict := { "Thank you!": "ありがとう！"
                      , "Hello!": "こんにちは！"
@@ -65,10 +65,13 @@ commonPhrasesDict := { "Thank you!": "ありがとう！"
                      , "I understand.": "わかりました"}
 
 ; These will change on patches
-chatAddress := 0x01F87A5C
-chatOffsets := [0x364, 0xFC, 0x0, 0x10, 0x0, 0x10]
-nameAddress := 0x01F86D30
-nameOffsets := [0x34, 0xB0, 0xE4, 0x30, 0xFC, 0x4, 0x10, 0x0, 0x10]
+global chatAddress := 0x01F87A5C
+global chatOffsets := [0x364, 0xFC, 0x0, 0x10, 0x0, 0x10]
+global nameAddress := 0x01F86D30
+global nameOffsets := [0x34, 0xB0, 0xE4, 0x30, 0xFC, 0x4, 0x10, 0x0, 0x10]
+
+global dqx := new _ClassMemory("ahk_exe DQXGame.exe", "", hProcessCopy)
+global baseAddress := dqx.getProcessBaseAddress("ahk_exe DQXGame.exe")
 
 Gui, 1:Default
 Gui, Add, Tab3,, General|Quests|Seasonals|Common Phrases|Storage Name
@@ -166,8 +169,6 @@ Send:
     }
     Until A_Index = numberToArrowOver
 
-    dqx := new _ClassMemory("ahk_exe DQXGame.exe", "", hProcessCopy)
-    baseAddress := dqx.getProcessBaseAddress("ahk_exe DQXGame.exe")
     dqx.writeBytes(baseAddress + chatAddress, convertStrToHex(textToSend), chatOffsets*)
     if (text_len > 13)
     {
@@ -192,124 +193,34 @@ Send:
 QuestSend:
   GuiControlGet, getQuestNumber,, % A_GuiControl
   questText := questDict[getQuestNumber]
-  text_len := StrLen(questText)
-  sanitizedBytes := StrReplace(convertStrToHex(questText), "`r`n", "")
-  numberToArrowOver := StrLen(sanitizedBytes) // 2
 
   Process, Exist, DQXGame.exe
   if ErrorLevel
-  {
-    WinActivate, ahk_exe DQXGame.exe
-    ;; Have to move the chat cursor to the position to where it should be for the text to send correctly
-    Loop {
-      Sleep 50
-      Send {Right}
-    }
-    Until A_Index = numberToArrowOver
-
-    dqx := new _ClassMemory("ahk_exe DQXGame.exe", "", hProcessCopy)
-    baseAddress := dqx.getProcessBaseAddress("ahk_exe DQXGame.exe")
-    dqx.writeBytes(baseAddress + chatAddress, convertStrToHex(questText), chatOffsets*)
-    if (text_len > 13)
-    {
-      Loop, 15 {
-        Sleep 50
-        Send {Space}
-      }
-      dqx.writeBytes(baseAddress + chatAddress, convertStrToHex(questText), chatOffsets*)
-      Loop, 8 {
-        Sleep 50
-        Send {Space}
-      }
-      dqx.writeBytes(baseAddress + chatAddress, convertStrToHex(questText), chatOffsets*)
-    }
-  }
+    WriteToDQX(questText)
   else
-  {
     msgBox "DQX window not found."
-  }
   Return
 
 SeasonalSend:
   GuiControlGet, getQuestNumber,, % A_GuiControl
-  questText := seasonalDict[getQuestNumber]
-  text_len := StrLen(questText)
-  sanitizedBytes := StrReplace(convertStrToHex(questText), "`r`n", "")
-  numberToArrowOver := StrLen(sanitizedBytes) // 2
+  seasonalText := seasonalDict[getQuestNumber]
 
   Process, Exist, DQXGame.exe
   if ErrorLevel
-  {
-    WinActivate, ahk_exe DQXGame.exe
-    ;; Have to move the chat cursor to the position to where it should be for the text to send correctly
-    Loop {
-      Sleep 50
-      Send {Right}
-    }
-    Until A_Index = numberToArrowOver
-
-    dqx := new _ClassMemory("ahk_exe DQXGame.exe", "", hProcessCopy)
-    baseAddress := dqx.getProcessBaseAddress("ahk_exe DQXGame.exe")
-    dqx.writeBytes(baseAddress + chatAddress, convertStrToHex(questText), chatOffsets*)
-    if (text_len > 13)
-    {
-      Loop, 15 {
-        Sleep 50
-        Send {Space}
-      }
-      dqx.writeBytes(baseAddress + chatAddress, convertStrToHex(questText), chatOffsets*)
-      Loop, 8 {
-        Sleep 50
-        Send {Space}
-      }
-      dqx.writeBytes(baseAddress + chatAddress, convertStrToHex(questText), chatOffsets*)
-    }
-  }
+    WriteToDQX(seasonalText)
   else
-  {
     msgBox "DQX window not found."
-  }
   Return
 
 PhraseSend:
   GuiControlGet, getPhrase,, % A_GuiControl
   phraseText := commonPhrasesDict[getPhrase]
-  text_len := StrLen(phraseText)
-  sanitizedBytes := StrReplace(convertStrToHex(phraseText), "`r`n", "")
-  numberToArrowOver := StrLen(sanitizedBytes) // 2
 
   Process, Exist, DQXGame.exe
   if ErrorLevel
-  {
-    WinActivate, ahk_exe DQXGame.exe
-    ;; Have to move the chat cursor to the position to where it should be for the text to send correctly
-    Loop {
-      Sleep 50
-      Send {Right}
-    }
-    Until A_Index = numberToArrowOver
-
-    dqx := new _ClassMemory("ahk_exe DQXGame.exe", "", hProcessCopy)
-    baseAddress := dqx.getProcessBaseAddress("ahk_exe DQXGame.exe")
-    dqx.writeBytes(baseAddress + chatAddress, convertStrToHex(phraseText), chatOffsets*)
-    if (text_len > 13)
-    {
-      Loop, 15 {
-        Sleep 50
-        Send {Space}
-      }
-      dqx.writeBytes(baseAddress + chatAddress, convertStrToHex(phraseText), chatOffsets*)
-      Loop, 8 {
-        Sleep 50
-        Send {Space}
-      }
-      dqx.writeBytes(baseAddress + chatAddress, convertStrToHex(phraseText), chatOffsets*)
-    }
-  }
+    WriteToDQX(seasonalText)
   else
-  {
     msgBox "DQX window not found."
-  }
   Return
 
 StorageSend:
@@ -358,8 +269,6 @@ StorageSend:
     if ErrorLevel
     {
       WinActivate, ahk_exe DQXGame.exe
-      dqx := new _ClassMemory("ahk_exe DQXGame.exe", "", hProcessCopy)
-      baseAddress := dqx.getProcessBaseAddress("ahk_exe DQXGame.exe")
       dqx.writeBytes(baseAddress + nameAddress, hexName, nameOffsets*)
     }
     else
@@ -368,3 +277,24 @@ StorageSend:
     }
     Return
   }
+
+WriteToDQX(textToSend)
+{
+  ; Iterate over each character in the phrase
+  Loop, Parse, textToSend
+  {
+    ;; Have to move the chat cursor to the position to where it should be for the text to send correctly
+    WinActivate, ahk_exe DQXGame.exe
+    Sleep 50
+    Send {Right}
+    Sleep 50
+    Send {Right}
+    Sleep 50
+    Send {Right}
+    Sleep 50
+    if (A_Index = 1)
+      startAddress := dqx.getAddressFromOffsets(baseAddress + chatAddress, chatOffsets*)
+    dqx.writeBytes(startAddress, convertStrToHex(A_LoopField))
+    startAddress := startAddress + 3
+  }
+}

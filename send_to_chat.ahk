@@ -26,6 +26,8 @@ questDict := { "Quest 001": "みーつけた！"
              , "Quest 505 (2)": "てんまでとどけ！タネきゅんきゅん"
              , "Quest 516": "サインください"
              , "Quest 531": "ようせいさん　ようせいさん"
+             , "Quest 538": "フミンフキュウ"
+             , "Quest 561": "イア・タア・シンパッ・ケウ"
              , "Quest 580": "ギリウスへいか　ばんざい"
              , "Quest 581": "おくすりのじかんです"
              , "Quest 606": "ベントラー"
@@ -69,12 +71,14 @@ global chatAddress := 0x01F87A5C
 global chatOffsets := [0x364, 0xFC, 0x0, 0x10, 0x0, 0x10]
 global nameAddress := 0x01F86D30
 global nameOffsets := [0x34, 0xB0, 0xE4, 0x30, 0xFC, 0x4, 0x10, 0x0, 0x10]
+global friendAddress := 0x01F86D30
+global friendOffsets := [0x34, 0xA8, 0x24, 0x24, 0x30, 0xFC, 0x0, 0x10, 0x0, 0x10] ; Might be [0x34, 0xAC, 0xC4, 0x24, 0x30, 0xFC, 0x0, 0x10, 0x0, 0x10]
 
 global dqx := new _ClassMemory("ahk_exe DQXGame.exe", "", hProcessCopy)
 global baseAddress := dqx.getProcessBaseAddress("ahk_exe DQXGame.exe")
 
 Gui, 1:Default
-Gui, Add, Tab3,, General|Quests|Seasonals|Common Phrases|Storage Name
+Gui, Add, Tab3,, General|Quests|Seasonals|Common Phrases|Storage Name|Add Friend
 Gui, Font, s16, Segoe UI
 Gui, Add, Text,, What is this?
 Gui, Font, s12, Segoe UI
@@ -144,6 +148,25 @@ Gui, Add, Text,x20 y+1, Alphanumeric characters, dashes and spaces only.
 Gui, Font, s12, Segoe UI
 Gui, Add, Edit, r1 vNameToSend w500, %NameToSend%
 Gui, Add, Button, gStorageSend, Send to DQX
+
+Gui, Tab, Add Friend
+Gui, Font, s16, Segoe UI
+Gui, Add, Text,, Enter a name when adding a friend using 'Enter Name && ID'.
+Gui, Font, s12, Segoe UI
+Gui, Add, Text,y+1, - Open the command menu and select 'Misc.' then select 'Friends'.
+Gui, Add, Text,y+1, - Select 'Add Friend' then select 'Enter Name && ID'.
+Gui, Add, Text,y+1, - Press the button mapped to 'Confirm' on your controller'.
+Gui, Add, Text,y+1, - The cursor will be in the name text box at this point.
+Gui, Add, Text,y+1, - Enter the Japanese name of the player you want to add below.
+Gui, Add, Text,y+1, - Click 'Send to DQX'. The program will enter the name into the text box.
+Gui, Add, Text,y+1, - Press the button mapped to 'Confirm' on your controller.`n    (Using a keyboard won't work properly. The cursor may automatically move to`n    the Player ID box if the name contains 6 characters)
+Gui, Add, Text,y+1, - Finally, enter the Player ID and select the confirm option in game.
+Gui, Font, s14, Segoe UI
+Gui, Add, Text,x20 y+10, Maximum 6 Characters
+Gui, Add, Text,x20 y+1, Characters used during player name creation only.
+Gui, Font, s12, Segoe UI
+Gui, Add, Edit, r1 vFriendToSend w500, %FriendToSend%
+Gui, Add, Button, gFriendSend, Send to DQX
 
 Gui, +alwaysontop
 Gui, Show, Autosize
@@ -242,6 +265,49 @@ StorageSend:
     {
       WinActivate, ahk_exe DQXGame.exe
       dqx.writeBytes(baseAddress + nameAddress, hexName, nameOffsets*)
+    }
+    else
+    {
+      msgBox "DQX window not found."
+    }
+    Return
+  }
+  
+FriendSend:
+  GuiControlGet, FriendToSend
+  numChars := StrLen(FriendToSend)
+  if (numChars > 6){
+    {
+      MsgBox, 4096, Attention!, Name must be 6 characters or less!
+    }
+  Return
+  }
+  else If RegExMatch(FriendToSend, "[ゐゑヰヱ]"){
+    {
+      MsgBox, 4096, Attention!, Name must contain characters used during player name creation only!
+    }
+  Return
+  }
+  else If RegExMatch(FriendToSend, "[^ぁ-んァ-ンヴ・ー～]"){
+    {
+      MsgBox, 4096, Attention!, Name must contain characters used during player name creation only!
+    }
+  Return
+  }
+  else
+  {
+    hexName := convertStrToHex(FriendToSend)
+    addByte := 00
+    num_bytes_to_add := 19 - (numChars * 3)
+    loop, %num_bytes_to_add%
+    {
+      hexName = %hexName%%addByte%
+    }
+    Process, Exist, DQXGame.exe
+    if ErrorLevel
+    {
+      WinActivate, ahk_exe DQXGame.exe
+      dqx.writeBytes(baseAddress + friendAddress, hexName, friendOffsets*)
     }
     else
     {

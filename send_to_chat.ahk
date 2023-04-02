@@ -73,13 +73,15 @@ global chatOffsets := [0x364, 0xFC, 0x0, 0x10, 0x0, 0x10]
 global nameAddress := 0x01F86D30
 global nameOffsets := [0x34, 0xB0, 0xE4, 0x30, 0xFC, 0x4, 0x10, 0x0, 0x10]
 global friendAddress := 0x01F86D30
-global friendOffsets := [0x34, 0xA8, 0x24, 0x24, 0x30, 0xFC, 0x0, 0x10, 0x0, 0x10]
+global friendOffsets := [0x34, 0xA8, 0x24, 0x24, 0x30, 0xFC, 0x0, 0x8, 0x2DC, 0x0]
+global teamAddress := 0x01F86D30
+global teamOffsets := [0x34, 0xA8, 0x24, 0x24, 0x30, 0xFC, 0x4, 0x8, 0x2DC, 0x0]
 
 global dqx := new _ClassMemory("ahk_exe DQXGame.exe", "", hProcessCopy)
 global baseAddress := dqx.getProcessBaseAddress("ahk_exe DQXGame.exe")
 
 Gui, 1:Default
-Gui, Add, Tab3,, General|Quests|Seasonals|Common Phrases|Storage Name|Add Friend
+Gui, Add, Tab3,, General|Quests|Seasonals|Common Phrases|Storage Name|Add Friend|Team Name
 Gui, Font, s16, Segoe UI
 Gui, Add, Text,, What is this?
 Gui, Font, s12, Segoe UI
@@ -141,8 +143,8 @@ Gui, Add, Text,y+1, - Select the Storage that you would like to change.
 Gui, Add, Text,y+1, - The cursor will be in the name text box at this point.
 Gui, Add, Text,y+1, - Enter the name you want below.
 Gui, Add, Text,y+1, - Click 'Send to DQX'. The program will enter the name into the text box.
-Gui, Add, Text,y+1, - Press the button mapped to 'Confirm' on your controller.`n    (Using a keyboard won't work properly)
-Gui, Add, Text,y+1, - Finally, select the confirm option in game. The storage is now renamed.
+Gui, Add, Text,y+1, - Press the button mapped to 'Confirm' on your controller.`n   (Using a keyboard won't work properly)
+Gui, Add, Text,y+1, - Finally, select the 'Confirm' option in game. The storage is now renamed.
 Gui, Font, s14, Segoe UI
 Gui, Add, Text,x20 y+10, Maximum 8 Characters
 Gui, Add, Text,x20 y+1, Alphanumeric characters, dashes and spaces only.
@@ -152,22 +154,42 @@ Gui, Add, Button, gStorageSend, Send to DQX
 
 Gui, Tab, Add Friend
 Gui, Font, s16, Segoe UI
-Gui, Add, Text,, Enter a name when adding a friend using 'Enter Name && ID'.
+Gui, Add, Text,, Enter a name when adding a friend or team member using`n'Enter Name && ID'.
 Gui, Font, s12, Segoe UI
-Gui, Add, Text,y+1, - Open the command menu and select 'Misc.' then select 'Friends'.
-Gui, Add, Text,y+1, - Select 'Add Friend' then select 'Enter Name && ID'.
+Gui, Add, Text,y+1, - Open the command menu and select the 'Misc.' option.
+Gui, Add, Text,y+1, - To add a friend, select 'Friends' then 'Add Friend'.
+Gui, Add, Text,y+1, - To add a team member, select 'Team' then 'Invite to Team'.
+Gui, Add, Text,y+1, - Select 'Enter Name && ID'.
 Gui, Add, Text,y+1, - Press the button mapped to 'Confirm' on your controller'.
 Gui, Add, Text,y+1, - The cursor will be in the name text box at this point.
 Gui, Add, Text,y+1, - Enter the Japanese name of the player you want to add below.
 Gui, Add, Text,y+1, - Click 'Send to DQX'. The program will enter the name into the text box.
-Gui, Add, Text,y+1, - Press the button mapped to 'Confirm' on your controller.`n    (Using a keyboard won't work properly. The cursor may automatically move to`n    the Player ID box if the name contains 6 characters)
-Gui, Add, Text,y+1, - Finally, enter the Player ID and select the confirm option in game.
+Gui, Add, Text,y+1, - Press the button mapped to 'Confirm' on your controller.`n   (Using a keyboard won't work properly. The cursor may automatically move to`n    the Player ID box if the name contains 6 characters)
+Gui, Add, Text,y+1, - Finally, enter the Player ID and select the 'Confirm' option in game.
 Gui, Font, s14, Segoe UI
 Gui, Add, Text,x20 y+10, Maximum 6 Characters
 Gui, Add, Text,x20 y+1, Characters used during player name creation only.
 Gui, Font, s12, Segoe UI
 Gui, Add, Edit, r1 vFriendToSend w500, %FriendToSend%
 Gui, Add, Button, gFriendSend, Send to DQX
+
+Gui, Tab, Team Name
+Gui, Font, s16, Segoe UI
+Gui, Add, Text,, Enter a team name when forming a team.
+Gui, Font, s12, Segoe UI
+Gui, Add, Text,y+1, - Talk to a Team Ambassador in town and select 'Form Team'.
+Gui, Add, Text,y+1, - Select 'Yes' to register a team.
+Gui, Add, Text,y+1, - Continue until the cursor is in the team name text box.
+Gui, Add, Text,y+1, - Enter the name you want below.
+Gui, Add, Text,y+1, - Click 'Send to DQX'. The program will enter the name into the text box.
+Gui, Add, Text,y+1, - Press the button mapped to 'Confirm' on your controller.`n   (Using a keyboard won't work properly.)
+Gui, Add, Text,y+1, - Finally, select the 'Confirm' option in game.
+Gui, Font, s14, Segoe UI
+Gui, Add, Text,x20 y+10, Maximum 10 Characters
+Gui, Add, Text,x20 y+1, Alphanumeric characters, dashes and spaces only.
+Gui, Font, s12, Segoe UI
+Gui, Add, Edit, r1 vTeamToSend w500, %TeamToSend%
+Gui, Add, Button, gTeamSend, Send to DQX
 
 Gui, +alwaysontop
 Gui, Show, Autosize
@@ -309,6 +331,61 @@ FriendSend:
     {
       WinActivate, ahk_exe DQXGame.exe
       dqx.writeBytes(baseAddress + friendAddress, hexName, friendOffsets*)
+    }
+    else
+    {
+      msgBox "DQX window not found."
+    }
+    Return
+  }
+
+TeamSend:
+  GuiControlGet, TeamToSend
+  numChars := StrLen(TeamToSend)
+  if (numChars > 10){
+    {
+      MsgBox, 4096, Attention!, Name must be 10 characters or less!
+    }
+  Return
+  }
+  else If RegExMatch(TeamToSend, "[^a-zA-Z0-9\s\-]"){
+    {
+      MsgBox, 4096, Attention!, Name must contain letters, numbers, dashes and spaces only!
+    }
+  Return
+  }
+  else
+  {
+    TeamToSend := replaceTeamHalfwidth(TeamToSend)
+    replaceTeamHalfwidth(TeamToSend) {
+      TeamToSend := StrReplace(TeamToSend, "`r`n`", "")
+      StringCaseSense, On
+      Loop, 26
+      {
+        TeamToSend := StrReplace(TeamToSend, Chr(65 - 1 + A_Index), Chr(65313 - 1 + A_Index))
+        TeamToSend := StrReplace(TeamToSend, Chr(97 - 1 + A_Index), Chr(65345 - 1 + A_Index))
+      }
+      Loop, 10
+      {
+        TeamToSend := StrReplace(TeamToSend, Chr(48 - 1 + A_Index), Chr(65296 - 1 + A_Index))
+      }
+      TeamToSend := StrReplace(TeamToSend, Chr(45), Chr(12540))
+      TeamToSend := StrReplace(TeamToSend, Chr(32), Chr(12288))
+      return, TeamToSend
+    }
+    StringCaseSense, Off
+    hexName := convertStrToHex(TeamToSend)
+    addByte := 00
+    num_bytes_to_add := 31 - (numChars * 3)
+    loop, %num_bytes_to_add%
+    {
+      hexName = %hexName%%addByte%
+    }
+    Process, Exist, DQXGame.exe
+    if ErrorLevel
+    {
+      WinActivate, ahk_exe DQXGame.exe
+      dqx.writeBytes(baseAddress + teamAddress, hexName, teamOffsets*)
     }
     else
     {

@@ -41,7 +41,12 @@ questDict := { "Quest 001": "みーつけた！"
              , "Version 3.2": "おままごとしましょー"
              , "Version 3.3 (1)": "にんげん"
              , "Version 3.3 (2)": "われワギにちかう"
-             , "Version 3.4": "みのり"
+             , "Version 3.4 Sea of Worth": "みのり"
+             , "Version 3.4 Sea of Unity": "やすらぎ"
+             , "Version 3.4 Sea of Peace": "しあわせ"
+             , "Version 3.4 Sea of Doubt": "ためらい"
+             , "Version 3.4 Sea of Sleep": "えいえん"
+             , "Version 3.4 Sea of Light": "よろこび"
              , "Version 4.4 (1)": "よろこびのそのであおう"
              , "Version 4.4 (2)": "フォステイルが！"
              , "Version 4.5": "ユマテルのカギ"
@@ -114,6 +119,11 @@ For index, value in questDict
     Gui, Add, Button, gQuestSend x+30 y79, %index%
   Else If (A_Index > 31 and A_Index < 41)
     Gui, Add, Button, gQuestSend, %index%
+  Else If (A_Index = 41)
+    Gui, Add, Button, gQuestSend x+70 y79, %index%
+  Else If (A_Index > 41 and A_Index < 51)
+    Gui, Add, Button, gQuestSend, %index%
+	
 
 Gui, Tab, Seasonals
 Gui, Add, Text,, Press a button to enter what you need to say to continue the quest.

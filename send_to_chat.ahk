@@ -47,6 +47,9 @@ questDict := { "Quest 001": "みーつけた！"
              , "Version 3.4 Sea of Doubt": "ためらい"
              , "Version 3.4 Sea of Sleep": "えいえん"
              , "Version 3.4 Sea of Light": "よろこび"
+             , "Version 4.0: Dancer 1 (Nina)": "ニイナ"
+             , "Version 4.0: Dancer 2 (Cute)": "キュート"
+             , "Version 4.0: Dancer 3 (Rominique)": "ロミニク"
              , "Version 4.4 (1)": "よろこびのそのであおう"
              , "Version 4.4 (2)": "フォステイルが！"
              , "Version 4.5": "ユマテルのカギ"
@@ -103,27 +106,13 @@ Gui, Add, Button, gSend, Send to DQX
 Gui, Add, Button, gCloseApp x+295, Exit Program
 
 Gui, Tab, Quests
-Gui, Add, Text,, Press a button to enter what you need to say to continue the quest.
+Gui, Add, Text,, Select the relevant quest to enter text into the chat.
+QuestDDL := 
 For index, value in questDict
-  If (A_Index < 11)
-    Gui, Add, Button, gQuestSend, %index%
-  Else If (A_Index = 11)
-    Gui, Add, Button, gQuestSend x+10 y79, %index%
-  Else If (A_Index > 11 and A_Index < 21)
-    Gui, Add, Button, gQuestSend, %index%
-  Else If (A_Index = 21)
-    Gui, Add, Button, gQuestSend x+20 y79, %index%
-  Else If (A_Index > 21 and A_Index < 31)
-    Gui, Add, Button, gQuestSend, %index%
-  Else If (A_Index = 31)
-    Gui, Add, Button, gQuestSend x+30 y79, %index%
-  Else If (A_Index > 31 and A_Index < 41)
-    Gui, Add, Button, gQuestSend, %index%
-  Else If (A_Index = 41)
-    Gui, Add, Button, gQuestSend x+70 y79, %index%
-  Else If (A_Index > 41 and A_Index < 51)
-    Gui, Add, Button, gQuestSend, %index%
-	
+  QuestDDL := QuestDDL . "|" . index
+QuestDDL := SubStr(QuestDDL, 2)
+Gui, Add, DropDownList, vQuestSelect w500, %QuestDDL%
+Gui, Add, Button, gQuestSend x21 y110, Send to DQX
 
 Gui, Tab, Seasonals
 Gui, Add, Text,, Press a button to enter what you need to say to continue the quest.
@@ -219,8 +208,8 @@ Send:
   Return
 
 QuestSend:
-  GuiControlGet, getQuestNumber,, % A_GuiControl
-  questText := questDict[getQuestNumber]
+  GuiControlGet, QuestSelect
+  questText := questDict[QuestSelect]
 
   Process, Exist, DQXGame.exe
   if ErrorLevel

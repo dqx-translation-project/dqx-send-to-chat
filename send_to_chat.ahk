@@ -56,7 +56,8 @@ questDict := { "Quest 001": "みーつけた！"
              , "Version 5.2 (1)": "リドよめざめよ"
              , "Version 5.2 (2)": "われじゆうをもとむ"
              , "Version 5.5": "リドよわがともよ"
-             , "Version 6.1": "むすすへえまめともりかひしうとんさられわ" }
+             , "Version 6.1": "むすすへえまめともりかひしうとんさられわ"
+             , "Version 6.5": "こうろのかぎ" }
 
 seasonalDict := { "Halloween Quest": "トリックオアトリート"
                 , "Christmas Quest": "メリークリスマス" 

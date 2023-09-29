@@ -61,8 +61,8 @@ questDict := { "Quest 001": "みーつけた！"
              , "Version 6.5": "こうろのかぎ" }
 
 seasonalDict := { "Halloween Quest": "トリックオアトリート"
-                , "Christmas Quest": "メリークリスマス" 
-                , "Valentine's Quest": "ハッピーバレンタイン" 
+                , "Christmas Quest": "メリークリスマス"
+                , "Valentine's Quest": "ハッピーバレンタイン"
                 , "White Day Quest": "ハッピーホワイトデー" }
 
 commonPhrasesDict := { "Thank you!": "ありがとう！"
@@ -71,7 +71,7 @@ commonPhrasesDict := { "Thank you!": "ありがとう！"
                      , "Congrats!": "おめでとう！"
                      , "No problem.": "どういたしまして"
                      , "Nice to meet you.": "よろしくお願いします"
-                     , "Good job.": "おつかれさまでした"
+                     , "Nice job, everyone!": "おつかれさまでした"
                      , "Sorry.": "ごめんなさい"
                      , "Are you ready?": "準備OK?"
                      , "I'll do my best!": "がんばります！"
@@ -102,14 +102,14 @@ Gui, Add, Text,, How to use:
 Gui, Font, s12, Segoe UI
 Gui, Add, Text,y+1, - Open a fresh chat box in game and switch to the desired chat category
 Gui, Add, Text,y+1, - Bring this program into focus and paste the Japanese text you want to`n   send to DQX
-Gui, Add, Text,y+1, - Click 'Send to DQX'. The program will move your DQX chat cursor to`n   the appropriate position and send the text into the DQX chat window.`n- Note: If you're trying to send using the latin alphabet, things will`n   look weird! This is intended to send Japanese characters
+Gui, Add, Text,y+1, - Click 'Send to DQX'. The program will move your DQX chat cursor to`n   the appropriate position and send the text into the DQX chat window.`n- Note: If you're trying to send using the latin alphabet, things will`n   look weird! This is intended to send Japanese characters.`n   If you're just seeing blank characters get inserted, try opening`n   and closing the chat box a few times.
 Gui, Add, Edit, r1 vTextToSend w500, %textToSend%
 Gui, Add, Button, gSend, Send to DQX
 Gui, Add, Button, gCloseApp x+295, Exit Program
 
 Gui, Tab, Quests
 Gui, Add, Text,, Select the relevant quest to enter text into the chat.
-QuestDDL := 
+QuestDDL :=
 For index, value in questDict
   QuestDDL := QuestDDL . "|" . index
 QuestDDL := SubStr(QuestDDL, 2)
@@ -296,7 +296,7 @@ StorageSend:
     }
     Return
   }
-  
+
 FriendSend:
   GuiControlGet, FriendToSend
   numChars := StrLen(FriendToSend)

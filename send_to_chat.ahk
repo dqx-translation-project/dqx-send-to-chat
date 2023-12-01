@@ -93,21 +93,21 @@ global dqx := new _ClassMemory("ahk_exe DQXGame.exe", "", hProcessCopy)
 global baseAddress := dqx.getProcessBaseAddress("ahk_exe DQXGame.exe")
 
 Gui, 1:Default
-Gui, Add, Tab3,, General|Quests|Seasonals|Common Phrases|Storage Name|Add Friend|Team Name
+Gui, Add, Tab3,, General|Quests|Seasonals|Common Phrases|Storage Name|Add Friend|Team Name|House Name|My Town Name
 Gui, Font, s16, Segoe UI
 Gui, Add, Text,, What is this?
 Gui, Font, s12, Segoe UI
 Gui, Add, Text,, A small program to get around no copy/paste support in DQX.
-Gui, Add, Text,y+1, Helpful for quests where you need to type Japanese to proceed, but`nyou don't know how.  :(
+Gui, Add, Text,y+1, Helpful for quests where you need to type Japanese to proceed, but you don't know`nhow.  :(
 Gui, Font, s16, Segoe UI
 Gui, Add, Text,, How to use:
 Gui, Font, s12, Segoe UI
 Gui, Add, Text,y+1, - Open a fresh chat box in game and switch to the desired chat category
-Gui, Add, Text,y+1, - Bring this program into focus and paste the Japanese text you want to`n   send to DQX
-Gui, Add, Text,y+1, - Click 'Send to DQX'. The program will move your DQX chat cursor to`n   the appropriate position and send the text into the DQX chat window.`n- Note: If you're trying to send using the latin alphabet, things will`n   look weird! This is intended to send Japanese characters.`n   If you're just seeing blank characters get inserted, try opening`n   and closing the chat box a few times.
-Gui, Add, Edit, r1 vTextToSend w500, %textToSend%
+Gui, Add, Text,y+1, - Bring this program into focus and paste the Japanese text you want to send to DQX
+Gui, Add, Text,y+1, - Click 'Send to DQX'. The program will move your DQX chat cursor to the appropriate`n  position and send the text into the DQX chat window.`n- Note: If you're trying to send using the latin alphabet, things will look weird!`n  This is intended to send Japanese characters. If you're just seeing blank characters get`n  inserted, try opening and closing the chat box a few times.
+Gui, Add, Edit, r1 vTextToSend w600, %textToSend%
 Gui, Add, Button, gSend, Send to DQX
-Gui, Add, Button, gCloseApp x+295, Exit Program
+Gui, Add, Button, gCloseApp x+392, Exit Program
 
 Gui, Tab, Quests
 Gui, Add, Text,, Select the relevant quest to enter text into the chat.
@@ -116,7 +116,7 @@ For index, value in questDict
   QuestDDL := QuestDDL . "|" . index
 QuestDDL := SubStr(QuestDDL, 2)
 Gui, Add, DropDownList, vQuestSelect w500, %QuestDDL%
-Gui, Add, Button, gQuestSend x21 y110, Send to DQX
+Gui, Add, Button, gQuestSend x21 y133, Send to DQX
 
 Gui, Tab, Seasonals
 Gui, Add, Text,, Press a button to enter what you need to say to continue the quest.
@@ -129,11 +129,11 @@ For index, value in commonPhrasesDict
   If (A_Index < 11)
     Gui, Add, Button, gPhraseSend, %index%
   Else If (A_Index = 11)
-    Gui, Add, Button, gPhraseSend x+100 y79, %index%
+    Gui, Add, Button, gPhraseSend x+100 y97, %index%
   Else If (A_Index > 11 and A_Index < 21)
     Gui, Add, Button, gPhraseSend, %index%
   Else If (A_Index = 21)
-    Gui, Add, Button, gPhraseSend x+100 y79, %index%
+    Gui, Add, Button, gPhraseSend x+100 y97, %index%
   Else If (A_Index > 21 and A_Index < 31)
     Gui, Add, Button, gPhraseSend, %index%
 
@@ -152,7 +152,7 @@ Gui, Font, s14, Segoe UI
 Gui, Add, Text,x20 y+10, Maximum 8 Characters
 Gui, Add, Text,x20 y+1, Alphanumeric characters, dashes and spaces only.
 Gui, Font, s12, Segoe UI
-Gui, Add, Edit, r1 vNameToSend w500, %NameToSend%
+Gui, Add, Edit, r1 vNameToSend w600, %NameToSend%
 Gui, Add, Button, gStorageSend, Send to DQX
 
 Gui, Tab, Add Friend
@@ -167,13 +167,13 @@ Gui, Add, Text,y+1, - Press the button mapped to 'Confirm' on your controller'.
 Gui, Add, Text,y+1, - The cursor will be in the name text box at this point.
 Gui, Add, Text,y+1, - Enter the Japanese name of the player you want to add below.
 Gui, Add, Text,y+1, - Click 'Send to DQX'. The program will enter the name into the text box.
-Gui, Add, Text,y+1, - Press the button mapped to 'Confirm' on your controller.`n   (Using a keyboard won't work properly. The cursor may automatically move to`n    the Player ID box if the name contains 6 characters)
+Gui, Add, Text,y+1, - Press the button mapped to 'Confirm' on your controller.`n   (Using a keyboard won't work properly. If the name contains 6 characters, the cursor  `n    may automatically move to the Player ID box.)
 Gui, Add, Text,y+1, - Finally, enter the Player ID and select the 'Confirm' option in game.
 Gui, Font, s14, Segoe UI
 Gui, Add, Text,x20 y+10, Maximum 6 Characters
 Gui, Add, Text,x20 y+1, Characters used during player name creation only.
 Gui, Font, s12, Segoe UI
-Gui, Add, Edit, r1 vFriendToSend w500, %FriendToSend%
+Gui, Add, Edit, r1 vFriendToSend w600, %FriendToSend%
 Gui, Add, Button, gFriendSend, Send to DQX
 
 Gui, Tab, Team Name
@@ -191,8 +191,45 @@ Gui, Font, s14, Segoe UI
 Gui, Add, Text,x20 y+10, Maximum 10 Characters
 Gui, Add, Text,x20 y+1, Alphanumeric characters, dashes and spaces only.
 Gui, Font, s12, Segoe UI
-Gui, Add, Edit, r1 vTeamToSend w500, %TeamToSend%
+Gui, Add, Edit, r1 vTeamToSend w600, %TeamToSend%
 Gui, Add, Button, gTeamSend, Send to DQX
+
+Gui, Tab, House Name
+Gui, Font, s16, Segoe UI
+Gui, Add, Text,, Change the name of your house.
+Gui, Font, s12, Segoe UI
+Gui, Add, Text,y+1, - In the 'Door Menu' of your house, select 'Call Manager'.
+Gui, Add, Text,y+1, - Select 'Change House Name'.
+Gui, Add, Text,y+1, - The cursor will be in the name text box at this point.
+Gui, Add, Text,y+1, - Enter the name you want below.
+Gui, Add, Text,y+1, - Click 'Send to DQX'. The program will enter the name into the text box.
+Gui, Add, Text,y+1, - Press the button mapped to 'Confirm' on your controller.`n   (Using a keyboard won't work properly.)
+Gui, Add, Text,y+1, - Finally, select the 'Confirm' option in game.
+Gui, Font, s14, Segoe UI
+Gui, Add, Text,x20 y+10, Maximum 16 Characters
+Gui, Add, Text,x20 y+1, Alphanumeric characters, apostrophes, dashes and spaces only.
+Gui, Font, s12, Segoe UI
+Gui, Add, Edit, r1 vHouseToSend w600, %HouseToSend%
+Gui, Add, Button, gHouseSend, Send to DQX
+
+Gui, Tab, My Town Name
+Gui, Font, s16, Segoe UI
+Gui, Add, Text,, Change the name of your My Town.
+Gui, Font, s12, Segoe UI
+Gui, Add, Text,y+1, - In the 'Door Menu' of a house in your My Town, select 'Call Manager'.
+Gui, Add, Text,y+1, - Select 'My Town Name Settings'.
+Gui, Add, Text,y+1, - Press the button mapped to 'Confirm' on your controller'.
+Gui, Add, Text,y+1, - The cursor will be in the name text box at this point.
+Gui, Add, Text,y+1, - Enter the name you want below.
+Gui, Add, Text,y+1, - Click 'Send to DQX'. The program will enter the name into the text box.
+Gui, Add, Text,y+1, - Press the button mapped to 'Confirm' on your controller.`n   (Using a keyboard won't work properly.)
+Gui, Add, Text,y+1, - Finally, select the 'Confirm' option in game.
+Gui, Font, s14, Segoe UI
+Gui, Add, Text,x20 y+10, Maximum 10 Characters
+Gui, Add, Text,x20 y+1, Alphanumeric characters, apostrophes, dashes and spaces only.
+Gui, Font, s12, Segoe UI
+Gui, Add, Edit, r1 vTownToSend w600, %TownToSend%
+Gui, Add, Button, gTownSend, Send to DQX
 
 Gui, +alwaysontop
 Gui, Show, Autosize
@@ -389,6 +426,118 @@ TeamSend:
     {
       WinActivate, ahk_exe DQXGame.exe
       dqx.writeBytes(baseAddress + teamAddress, hexName, teamOffsets*)
+    }
+    else
+    {
+      msgBox "DQX window not found."
+    }
+    Return
+  }
+
+HouseSend:
+  GuiControlGet, HouseToSend
+  numChars := StrLen(HouseToSend)
+  if (numChars > 16){
+    {
+      MsgBox, 4096, Attention!, Name must be 16 characters or less!
+    }
+  Return
+  }
+  else If RegExMatch(HouseToSend, "[^a-zA-Z0-9\s\-\']"){
+    {
+      MsgBox, 4096, Attention!, Name must contain letters, numbers, apostrophes, dashes and spaces only!
+    }
+  Return
+  }
+  else
+  {
+    HouseToSend := replaceHouseHalfwidth(HouseToSend)
+    replaceHouseHalfwidth(HouseToSend) {
+      HouseToSend := StrReplace(HouseToSend, "`r`n`", "")
+      StringCaseSense, On
+      Loop, 26
+      {
+        HouseToSend := StrReplace(HouseToSend, Chr(65 - 1 + A_Index), Chr(65313 - 1 + A_Index))
+        HouseToSend := StrReplace(HouseToSend, Chr(97 - 1 + A_Index), Chr(65345 - 1 + A_Index))
+      }
+      Loop, 10
+      {
+        HouseToSend := StrReplace(HouseToSend, Chr(48 - 1 + A_Index), Chr(65296 - 1 + A_Index))
+      }
+      HouseToSend := StrReplace(HouseToSend, Chr(45), Chr(12540))
+      HouseToSend := StrReplace(HouseToSend, Chr(32), Chr(12288))
+      HouseToSend := StrReplace(HouseToSend, Chr(39), Chr(65344))
+      return, HouseToSend
+    }
+    StringCaseSense, Off
+    hexName := convertStrToHex(HouseToSend)
+    addByte := 00
+    num_bytes_to_add := 49 - (numChars * 3)
+    loop, %num_bytes_to_add%
+    {
+      hexName = %hexName%%addByte%
+    }
+    Process, Exist, DQXGame.exe
+    if ErrorLevel
+    {
+      WinActivate, ahk_exe DQXGame.exe
+      dqx.writeBytes(baseAddress + friendAddress, hexName, friendOffsets*)
+    }
+    else
+    {
+      msgBox "DQX window not found."
+    }
+    Return
+  }
+
+TownSend:
+  GuiControlGet, TownToSend
+  numChars := StrLen(TownToSend)
+  if (numChars > 10){
+    {
+      MsgBox, 4096, Attention!, Name must be 10 characters or less!
+    }
+  Return
+  }
+  else If RegExMatch(TownToSend, "[^a-zA-Z0-9\s\-\']"){
+    {
+      MsgBox, 4096, Attention!, Name must contain letters, numbers, apostrophes, dashes and spaces only!
+    }
+  Return
+  }
+  else
+  {
+    TownToSend := replaceHouseHalfwidth(TownToSend)
+    replaceTownHalfwidth(TownToSend) {
+      TownToSend := StrReplace(TownToSend, "`r`n`", "")
+      StringCaseSense, On
+      Loop, 26
+      {
+        TownToSend := StrReplace(TownToSend, Chr(65 - 1 + A_Index), Chr(65313 - 1 + A_Index))
+        TownToSend := StrReplace(TownToSend, Chr(97 - 1 + A_Index), Chr(65345 - 1 + A_Index))
+      }
+      Loop, 10
+      {
+        TownToSend := StrReplace(TownToSend, Chr(48 - 1 + A_Index), Chr(65296 - 1 + A_Index))
+      }
+      TownToSend := StrReplace(TownToSend, Chr(45), Chr(12540))
+      TownToSend := StrReplace(TownToSend, Chr(32), Chr(12288))
+      TownToSend := StrReplace(TownToSend, Chr(39), Chr(65344))
+      return, TownToSend
+    }
+    StringCaseSense, Off
+    hexName := convertStrToHex(TownToSend)
+    addByte := 00
+    num_bytes_to_add := 31 - (numChars * 3)
+    loop, %num_bytes_to_add%
+    {
+      hexName = %hexName%%addByte%
+    }
+    Process, Exist, DQXGame.exe
+    if ErrorLevel
+    {
+      WinActivate, ahk_exe DQXGame.exe
+      dqx.writeBytes(baseAddress + friendAddress, hexName, friendOffsets*)
     }
     else
     {

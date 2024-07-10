@@ -12,7 +12,20 @@ FileEncoding UTF-8
 
 
 ; These will change on patches
-global chatAddress := 0x022609F4
+; How do you find this?
+; * Open a chat box in-game (shift+enter)
+; * Type something unique (I use bananaparrot)
+; * Search for the text in cheat engine
+; * Edit each result until you see it change on screen in your chat box
+; * When you find the one that changes, do a pointer scan on it. This will gives you hundreds of thousands of results
+; * Search for something else unique (bananasandapples)
+; * Find the address that updates the text on-screen
+; * Re-scan using your same pointer scan session with the new address
+; * Re-launch the game, leaving Cheat Engine open so you don't lose your pointer scan session
+; * Do the above chat tasks you just did again (type, edit, scan)
+; * This should give you a list of pointers that are pointing at the chat buffer
+; * Update the address + pointers below and test
+global chatAddress := 0x022569A0
 global chatOffsets := [0x8, 0x8C, 0x8, 0x90, 0x2DC, 0x0]
 
 questDict := { "Asfeld: Chapter 5": "わかめ かめかめ うみのさち"

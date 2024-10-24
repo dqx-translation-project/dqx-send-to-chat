@@ -87,7 +87,8 @@ questDict := { "Asfeld: Chapter 5": "わかめ かめかめ うみのさち"
              , "Version 6.5": "こうろのかぎ"
              , "Version 7.0": "まれびと" 
              , "Version 7.1 (1)": "ニワトリ" 
-             , "Version 7.1 (2)": "ネズミ" }
+             , "Version 7.1 (2)": "ネズミ" 
+             , "Version 7.2": "だんざいのけん！" }
 
 commonPhrasesDict := { "Thank you!": "ありがとう！"
                      , "Hello!": "こんにちは！"

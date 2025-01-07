@@ -25,7 +25,7 @@ FileEncoding UTF-8
 ; * Do the above chat tasks you just did again (type, edit, scan)
 ; * This should give you a list of pointers that are pointing at the chat buffer
 ; * Update the address + pointers below and test
-global chatAddress := 0x01B8B7B4
+global chatAddress := 0x01B8C7B4
 global chatOffsets := [0x8, 0x8C, 0x8, 0x90, 0x2DC, 0x0]
 
 questDict := { "Asfeld: Chapter 5": "わかめ かめかめ うみのさち"

@@ -29,6 +29,7 @@ global chatAddress := 0x01C312D8
 global chatOffsets := [0x364, 0x104, 0x0, 0x10, 0x0, 0x10]
 
 questDict := { "Asfeld: Chapter 5": "わかめ かめかめ うみのさち"
+             , "Asfeld: Place of Prayer": "オープンザチャクラ"
              , "Quest 001": "みーつけた！"
              , "Quest 002": "ごめんねなの！"
              , "Quest 003": "せんせいおしえて！"

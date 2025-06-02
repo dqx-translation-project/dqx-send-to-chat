@@ -3,6 +3,7 @@
 #Include <classMemory>
 #Include <convertToHex>
 #Include <checkElevation>
+#Include <JSON>
 #SingleInstance, Force
 #WinActivateForce
 SendMode Input
@@ -10,6 +11,12 @@ SetWorkingDir, %A_ScriptDir%
 SetBatchLines, -1
 FileEncoding UTF-8
 
+; This should be updated every time we compile a new version and push it out to users.
+; It is used to check for updates against GitHub's tagging scheme.
+;
+; Versioning scheme:
+;   vX.X.X.Y => v = static; X.X.X = DQX version; Y = Send to Chat revision (starts at 0)
+global scriptVer := "v7.4.1.1"
 
 ; These will change on patches
 ; How do you find this?
@@ -28,6 +35,45 @@ FileEncoding UTF-8
 global chatAddress := 0x01C312D8
 global chatOffsets := [0x364, 0x104, 0x0, 0x10, 0x0, 0x10]
 
+;=== Auto update ===============================================
+oWhr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
+url := "https://api.github.com/repos/dqx-translation-project/dqx-send-to-chat/releases/latest"
+oWhr.Open("GET", url, 0)
+oWhr.Send()
+oWhr.WaitForResponse()
+jsonResponse := JSON.Load(oWhr.ResponseText)
+latestVersion := (jsonResponse.tag_name)
+
+if (oWhr.Status != 200) {
+  statusCode := oWhr.Status
+  message := oWhr.StatusText
+  MsgBox, 4112,, Failed to check for updates.`n`nStatus code: %statusCode% `nMessage: %message%
+}
+else {
+  if (latestVersion != scriptVer) {
+    MsgBox, 4, Send to Chat: Update available, A new version of Send to Chat is available.`n`nCurrent version: %scriptVer%`nLatest Version: %latestVersion%`n`nDo you wish to update?
+
+    ; IfMsgBox *requires* curly braces to be below the function for some reason.
+    IfMsgBox, Yes
+    {
+      UrlDownloadToFile, https://github.com/dqx-translation-project/dqx-send-to-chat/releases/latest/download/send_to_chat.exe, .\send_to_chat_new.exe
+      if (ErrorLevel) {
+        FileDelete, .\send_to_chat_new.exe
+        MsgBox, 4112,, Update failed. Please try again later.`n`nError level: %ErrorLevel%
+      }
+      else {
+        FileMove, .\send_to_chat.exe, A_Temp\send_to_chat_old.exe, 1
+        FileMove, .\send_to_chat_new.exe, .\send_to_chat.exe, 1
+        MsgBox, Update successful. Send to Chat will now relaunch.
+        Reload
+      }
+    }
+  }
+}
+
+; Delete old executable if exists.
+FileDelete, A_Temp\send_to_chat_old.exe
+
 questDict := { "Asfeld: Chapter 5": "わかめ かめかめ うみのさち"
              , "Asfeld: Place of Prayer": "オープンザチャクラ"
              , "Quest 001": "みーつけた！"
@@ -43,6 +89,7 @@ questDict := { "Asfeld: Chapter 5": "わかめ かめかめ うみのさち"
              , "Quest 450": "ナドラガンドにヒカリあれ"
              , "Quest 453": "マイユさーん！"
              , "Quest 480": "モモンタル"
+             , "Quest 485 (Utopia: Boss Unlock)": "りゅうとうしがあらわれた！コマンド？"
              , "Quest 496": "るるるんぽう"
              , "Quest 505 (1)": "おおきくなあれ！タネタネきゅん！"
              , "Quest 505 (2)": "てんまでとどけ！タネきゅんきゅん"
@@ -66,7 +113,6 @@ questDict := { "Asfeld: Chapter 5": "わかめ かめかめ うみのさち"
              , "Seasonal: Halloween Quest": "トリックオアトリート"
              , "Seasonal: Valentine's Quest": "ハッピーバレンタイン"
              , "Seasonal: White Day Quest": "ハッピーホワイトデー"
-             , "Utopia Q485 Boss Unlock": "りゅうとうしがあらわれた！コマンド？"
              , "Version 3.2": "おままごとしましょー"
              , "Version 3.3 (1)": "にんげん"
              , "Version 3.3 (2)": "われワギにちかう"
@@ -100,55 +146,98 @@ commonPhrasesDict := { "Thank you!": "ありがとう！"
                      , "Nice to meet you.": "よろしくお願いします"
                      , "Nice job, everyone!": "おつかれさまでした"
                      , "Sorry.": "ごめんなさい"
-                     , "Are you ready?": "準備OK?"
+                     , "Are you ready?": "準備ＯＫ？"
                      , "I'll do my best!": "がんばります！"
-                     , "I understand.": "わかりました"}
+                     , "I understand.": "わかりました" }
 
+; Adds image to compiled exe. Writes the file to the user's filesystem
+; and deletes it when the program closes. Stores image in %APPDATA%\Temp
+if (A_IsCompiled) {
+  bannerImage := A_Temp . "\sendtochat.png"
+}
+else
+  bannerImage := ".\imgs\sendtochat.png"
 
+FileInstall, .\imgs\sendtochat.png, %bannerImage%
+
+Gui, +AlwaysOnTop
+
+; General tab
 Gui, 1:Default
 Gui, Add, Tab3,, General|Quests|Common Phrases
+Gui, Add, Picture, w225 h-1, %bannerImage%
 Gui, Font, s16, Segoe UI
-Gui, Add, Text,, What is this?
+Gui, Add, Text,, How to use?
 Gui, Font, s12, Segoe UI
-Gui, Add, Text,, A small program to get around no copy/paste support in DQX.
-Gui, Font, s16, Segoe UI
-Gui, Add, Text,, How to use:
-Gui, Font, s12, Segoe UI
-Gui, Add, Text,y+1, - Open a fresh chat box in game and switch to the desired chat category`n  (do not open the chat box through the frequent phrases menu or DQX will crash)
-Gui, Add, Text,y+1, - Bring this program into focus and paste the Japanese text you want to send to DQX
-Gui, Add, Text,y+1, - Click 'Send to DQX'. The program will move your DQX chat cursor to the appropriate`n  position and send the text into the DQX chat window.`n- Note: If you're trying to send using the latin alphabet, things will look weird!`n  This is intended to send Japanese characters. If you're just seeing blank characters`n  get inserted, try opening and closing the chat box a few times.
-Gui, Add, Edit, r1 vTextToSend w600, %textToSend%
+Gui, Add, Text, y+1, -> Open a fresh chat box in game and switch to the desired chat category
+Gui, Font, s12 Italic, Segoe UI
+message := "    (do not open the chat box through the frequent phrases menu or DQX will crash)"
+Gui, Add, Text, y+1, %message%
+Gui, Font, s12 Norm, Segoe UI
+Gui, Add, Text, y+1, -> Bring this program into focus and paste the Japanese text you want to send
+message := "-> Click 'Send to DQX'. The program will move your DQX chat cursor to the`n     appropriate position and send the text into the DQX chat window"
+Gui, Add, Text, y+1, %message%
+Gui, Font, s12 Norm, Segoe UI
+Gui, Add, Edit, r1 vTextToSend w600 x21 y278, %textToSend%
 Gui, Add, Button, gSend, Send to DQX
 Gui, Add, Button, gCloseApp x+392, Exit Program
 
+; Quests tab
 Gui, Tab, Quests
 Gui, Add, Text,, Select the relevant quest to enter text into the chat.
 QuestDDL :=
 For index, value in questDict
   QuestDDL := QuestDDL . "|" . index
 QuestDDL := SubStr(QuestDDL, 2)
-Gui, Add, DropDownList, vQuestSelect w500, %QuestDDL%
-Gui, Add, Button, gQuestSend x21 y133, Send to DQX
+Gui, Add, DropDownList, vQuestSelect w600 gUpdateQuestPreview, %QuestDDL%
+Gui, Add, Text, x21 y255, Text that will be sent:
+Gui, Add, Edit, vQuestPreview w600 x21 y278 ReadOnly -WantReturn,
+Gui, Add, Button, gQuestSend, Send to DQX
+Gui, Add, Button, gCloseApp x+392, Exit Program
 
+
+; Common Phrases tab
 Gui, Tab, Common Phrases
 Gui, Add, Text,, Press a button to enter a common phrase into the chat.
-For index, value in commonPhrasesDict
-  If (A_Index < 11)
-    Gui, Add, Button, gPhraseSend, %index%
-  Else If (A_Index = 11)
-    Gui, Add, Button, gPhraseSend x+100 y97, %index%
-  Else If (A_Index > 11 and A_Index < 21)
-    Gui, Add, Button, gPhraseSend, %index%
-  Else If (A_Index = 21)
-    Gui, Add, Button, gPhraseSend x+100 y97, %index%
-  Else If (A_Index > 21 and A_Index < 31)
-    Gui, Add, Button, gPhraseSend, %index%
 
-Gui, Show, Autosize
+; Button layout settings
+guiWidth := 600
+btnWidth := guiWidth // 3 - 15  ; subtract spacing
+btnHeight := 30
+marginX := 40
+marginY := 70
+spacingX := 5
+spacingY := 5
+
+index := 0
+For phrase, translation in commonPhrasesDict {
+    row := index // 3
+    col := Mod(index, 3)
+    x := marginX + (btnWidth + spacingX) * col
+    y := marginY + (btnHeight + spacingY) * row
+
+    Gui, Add, Button, x%x% y%y% w%btnWidth% h%btnHeight% gPhraseFocus, %phrase%
+    index++
+}
+
+Gui, Add, Text, x21 y255, Text that will be sent:
+Gui, Add, Edit, vPhrasePreview w600 x21 y278 ReadOnly -WantReturn,  ; This will show the phrase text preview
+Gui, Add, Button, gPhraseSend, Send to DQX
+Gui, Add, Button, gCloseApp x+392, Exit Program
+
+Gui, Show, Autosize, Send to Chat (%scriptVer%)
 Return
 
 
 CloseApp:
+  if (A_IsCompiled)
+    FileDelete, %bannerImage%
+  ExitApp
+
+
+GuiClose:
+  if (A_IsCompiled)
+    FileDelete, %bannerImage%
   ExitApp
 
 
@@ -159,8 +248,15 @@ Send:
   if ErrorLevel
     WriteToDQX(TextToSend)
   else
-    MsgBox, 4096,, DQX window not found. Is it open?
+    MsgBox, 4112,, DQX window not found. Is it open?  ; 4112 = 4096 + 16 (always on top + error)
   Return
+
+
+UpdateQuestPreview:
+  GuiControlGet, QuestSelect,, QuestSelect
+  questText := questDict[QuestSelect]
+  GuiControl,, QuestPreview, %questText%
+Return
 
 
 QuestSend:
@@ -171,19 +267,27 @@ QuestSend:
   if ErrorLevel
     WriteToDQX(questText)
   else
-    MsgBox, 4096,, DQX window not found. Is it open?
+    MsgBox, 4112,, DQX window not found. Is it open?
   Return
 
 
-PhraseSend:
+PhraseFocus:
   GuiControlGet, getPhrase,, % A_GuiControl
+  phraseText := commonPhrasesDict[getPhrase]
+
+  GuiControl,, PhrasePreview, %phraseText%
+Return
+
+
+PhraseSend:
+  GuiControlGet, PhrasePreview,, PhrasePreview
   phraseText := commonPhrasesDict[getPhrase]
 
   Process, Exist, DQXGame.exe
   if ErrorLevel
     WriteToDQX(phraseText)
   else
-    MsgBox, 4096,, DQX window not found. Is it open?
+    MsgBox, 4112,, DQX window not found. Is it open?
   Return
 
 
@@ -192,7 +296,7 @@ WriteToDQX(textToSend) {
   Process, Exist, DQXGame.exe
   pid := ErrorLevel
   if (pid = 0) {
-    MsgBox, 4096,, Could not get DQXGame.exe process id.
+    MsgBox, 4112,, Could not get DQXGame.exe process id.
     ExitApp
   }
 
@@ -200,7 +304,7 @@ WriteToDQX(textToSend) {
   is_elevated := IsProcessElevated(pid)
   if (is_elevated != 0) {
     if (A_IsAdmin = 0) {
-      MsgBox, 4096,, DQX is running as admin, but this program is not. Re-launch send to chat as an administrator and try again.
+      MsgBox, 4112,, DQX is running as admin, but this program is not. Re-launch Send to Chat as an administrator and try again.
       ExitApp
     }
   }
@@ -212,36 +316,29 @@ WriteToDQX(textToSend) {
   Loop, Parse, textToSend
   {
     ; Instead of naturally sending text to the client, we read the requested text, convert it into utf-8 bytes
-    ; and write it directly into the game's chat buffer. We do this because users tend to not have the
-    ; Japanese language / keyboard installed on their computers. Additionally, the game may not have been launched
-    ; with CreateProcessW support (only CreateProcessA). This bypasses the need to do this.
+    ; and write it directly into the game's chat buffer.
     ;
     ; To imitate typing into the buffer, we need to trick the game into thinking we typed into it. We do this by
     ; arrowing over the number of bytes a character would have been (3), then inserting the character into the buffer.
     WinActivate, ahk_exe DQXGame.exe
     Send {Right}
-    Sleep 50
-    WinActivate, ahk_exe DQXGame.exe
+    Sleep 25
     Send {Right}
-    Sleep 50
-    WinActivate, ahk_exe DQXGame.exe
+    Sleep 25
     Send {Right}
-    Sleep 50
-
-    if (A_Index = 1)
-      startAddress := dqx.getAddressFromOffsets(baseAddress + chatAddress, chatOffsets*)
-
-    dqx.writeBytes(startAddress, convertStrToHex(A_LoopField))
-    startAddress := startAddress + 3 ; We do this as each JP character takes 3 bytes.
+    Sleep 25
 
     ; For phrases that use all 20 available JP characters in the chatbox,
     ; we need to arrow over to the left once, and then back to the right to
     ; get it to properly send.
     if (A_Index = 20) {
-      WinActivate, ahk_exe DQXGame.exe
       Send {Left}
-      Sleep 50
+      Sleep 25
       Send {Right}
     }
   }
+
+  startAddress := dqx.getAddressFromOffsets(baseAddress + chatAddress, chatOffsets*)
+  dqx.writeBytes(startAddress, convertStrToHex(textToSend))
+
 }

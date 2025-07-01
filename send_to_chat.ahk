@@ -11,12 +11,15 @@ SetWorkingDir, %A_ScriptDir%
 SetBatchLines, -1
 FileEncoding UTF-8
 
+; Delete old executable if exists.
+FileDelete, .\send_to_chat_old.exe
+
 ; This should be updated every time we compile a new version and push it out to users.
 ; It is used to check for updates against GitHub's tagging scheme.
 ;
 ; Versioning scheme:
 ;   vX.X.X.Y => v = static; X.X.X = DQX version; Y = Send to Chat revision (starts at 0)
-global scriptVer := "v7.4.2.0"
+global scriptVer := "v7.4.2.1"
 
 ; These will change on patches
 ; How do you find this?
@@ -62,17 +65,13 @@ else {
         MsgBox, 4112,, Update failed. Please try again later.`n`nError level: %ErrorLevel%
       }
       else {
-        FileMove, .\send_to_chat.exe, A_Temp\send_to_chat_old.exe, 1
+        FileMove, .\send_to_chat.exe, .\send_to_chat_old.exe, 1
         FileMove, .\send_to_chat_new.exe, .\send_to_chat.exe, 1
-        MsgBox, Update successful. Send to Chat will now relaunch.
         Reload
       }
     }
   }
 }
-
-; Delete old executable if exists.
-FileDelete, A_Temp\send_to_chat_old.exe
 
 questDict := { "Asfeld: Chapter 5": "わかめ かめかめ うみのさち"
              , "Asfeld: Place of Prayer": "オープンザチャクラ"

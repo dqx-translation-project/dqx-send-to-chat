@@ -19,7 +19,7 @@ FileDelete, .\send_to_chat_old.exe
 ;
 ; Versioning scheme:
 ;   vX.X.X.Y => v = static; X.X.X = DQX version; Y = Send to Chat revision (starts at 0)
-global scriptVer := "v7.4.2.1"
+global scriptVer := "v7.4.2.0"
 
 ; These will change on patches
 ; How do you find this?

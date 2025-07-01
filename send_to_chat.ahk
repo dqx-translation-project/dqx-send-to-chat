@@ -16,7 +16,7 @@ FileEncoding UTF-8
 ;
 ; Versioning scheme:
 ;   vX.X.X.Y => v = static; X.X.X = DQX version; Y = Send to Chat revision (starts at 0)
-global scriptVer := "v7.4.1.1"
+global scriptVer := "v7.4.2.0"
 
 ; These will change on patches
 ; How do you find this?
@@ -76,6 +76,7 @@ FileDelete, A_Temp\send_to_chat_old.exe
 
 questDict := { "Asfeld: Chapter 5": "わかめ かめかめ うみのさち"
              , "Asfeld: Place of Prayer": "オープンザチャクラ"
+             , "Q485 at Utopia: Dark King Slime Unlock": "りゅうとうしがあらわれた！コマンド？"
              , "Quest 001": "みーつけた！"
              , "Quest 002": "ごめんねなの！"
              , "Quest 003": "せんせいおしえて！"
@@ -89,7 +90,6 @@ questDict := { "Asfeld: Chapter 5": "わかめ かめかめ うみのさち"
              , "Quest 450": "ナドラガンドにヒカリあれ"
              , "Quest 453": "マイユさーん！"
              , "Quest 480": "モモンタル"
-             , "Quest 485 (Utopia: Boss Unlock)": "りゅうとうしがあらわれた！コマンド？"
              , "Quest 496": "るるるんぽう"
              , "Quest 505 (1)": "おおきくなあれ！タネタネきゅん！"
              , "Quest 505 (2)": "てんまでとどけ！タネきゅんきゅん"
@@ -111,6 +111,7 @@ questDict := { "Asfeld: Chapter 5": "わかめ かめかめ うみのさち"
              , "Quest 761": "うんめいとは"
              , "Seasonal: Christmas Quest": "メリークリスマス"
              , "Seasonal: Halloween Quest": "トリックオアトリート"
+             , "Seasonal: Star Festival": "だいすき"
              , "Seasonal: Valentine's Quest": "ハッピーバレンタイン"
              , "Seasonal: White Day Quest": "ハッピーホワイトデー"
              , "Version 3.2": "おままごとしましょー"

@@ -313,6 +313,16 @@ WriteToDQX(textToSend) {
   dqx := new _ClassMemory("ahk_exe DQXGame.exe", "", hProcessCopy)
   baseAddress := dqx.getProcessBaseAddress("ahk_exe DQXGame.exe")
 
+  ; the pointer address doesn't point to the chat buffer until it's both opened and we've typed something into it.
+  ; we'll move the cursor around to make sure the address updates, then resolve it.
+  WinActivate, ahk_exe DQXGame.exe
+  Send {Right}
+  Sleep 25
+  Send {Left}
+  Sleep 25
+
+  startAddress := dqx.getAddressFromOffsets(baseAddress + chatAddress, chatOffsets*)
+
   Loop, Parse, textToSend
   {
     ; Instead of naturally sending text to the client, we read the requested text, convert it into utf-8 bytes
@@ -328,6 +338,9 @@ WriteToDQX(textToSend) {
     Send {Right}
     Sleep 25
 
+    dqx.writeBytes(startAddress, convertStrToHex(A_LoopField))
+    startAddress += 3
+
     ; For phrases that use all 20 available JP characters in the chatbox,
     ; we need to arrow over to the left once, and then back to the right to
     ; get it to properly send.
@@ -337,8 +350,5 @@ WriteToDQX(textToSend) {
       Send {Right}
     }
   }
-
-  startAddress := dqx.getAddressFromOffsets(baseAddress + chatAddress, chatOffsets*)
-  dqx.writeBytes(startAddress, convertStrToHex(textToSend))
 
 }

@@ -19,7 +19,7 @@ FileDelete, .\send_to_chat_old.exe
 ;
 ; Versioning scheme:
 ;   vX.X.X.Y => v = static; X.X.X = DQX version; Y = Send to Chat revision (starts at 0)
-global scriptVer := "v7.4.2.1"
+global scriptVer := "v7.4.3.0"
 
 ; These will change on patches
 ; How do you find this?
@@ -35,8 +35,8 @@ global scriptVer := "v7.4.2.1"
 ; * Do the above chat tasks you just did again (type, edit, scan)
 ; * This should give you a list of pointers that are pointing at the chat buffer
 ; * Update the address + pointers below and test
-global chatAddress := 0x01C312D8
-global chatOffsets := [0x364, 0x104, 0x0, 0x10, 0x0, 0x10]
+global chatAddress := 0x01C2D5B4
+global chatOffsets := [0x8, 0x90, 0x4, 0x90, 0x2DC, 0x0]
 
 ;=== Auto update ===============================================
 oWhr := ComObjCreate("WinHttp.WinHttpRequest.5.1")

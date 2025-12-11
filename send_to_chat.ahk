@@ -19,7 +19,7 @@ FileDelete, .\send_to_chat_old.exe
 ;
 ; Versioning scheme:
 ;   vX.X.X.Y => v = static; X.X.X = DQX version; Y = Send to Chat revision (starts at 0)
-global scriptVer := "v7.5.0.0"
+global scriptVer := "v7.6.0.0"
 
 ; These will change on patches
 ; How do you find this?
@@ -35,7 +35,7 @@ global scriptVer := "v7.5.0.0"
 ; * Do the above chat tasks you just did again (type, edit, scan)
 ; * This should give you a list of pointers that are pointing at the chat buffer
 ; * Update the address + pointers below and test
-global chatAddress := 0x01C4873C
+global chatAddress := 0x01C55C34
 global chatOffsets := [0x8, 0x8C, 0x8, 0x90, 0x2DC, 0x0]
 
 ;=== Auto update ===============================================
@@ -137,7 +137,7 @@ questDict := { "Asfeld: Chapter 5": "わかめ かめかめ うみのさち"
              , "Version 7.0": "まれびと"
              , "Version 7.1 (1)": "ニワトリ"
              , "Version 7.1 (2)": "ネズミ"
-             , "Version 7.2": "だんざいのけん！" 
+             , "Version 7.2": "だんざいのけん！"
              , "Version 7.5": "むにえかのまち" }
 
 commonPhrasesDict := { "Thank you!": "ありがとう！"

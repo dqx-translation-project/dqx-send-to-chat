@@ -319,9 +319,9 @@ WriteToDQX(textToSend) {
   ; we'll move the cursor around to make sure the address updates, then resolve it.
   WinActivate, ahk_exe DQXGame.exe
   Send {Right}
-  Sleep 25
+  Sleep 50
   Send {Left}
-  Sleep 25
+  Sleep 50
 
   startAddress := dqx.getAddressFromOffsets(baseAddress + chatAddress, chatOffsets*)
 
@@ -334,23 +334,25 @@ WriteToDQX(textToSend) {
     ; arrowing over the number of bytes a character would have been (3), then inserting the character into the buffer.
     WinActivate, ahk_exe DQXGame.exe
     Send {Right}
-    Sleep 25
+    Sleep 50
     Send {Right}
-    Sleep 25
+    Sleep 50
     Send {Right}
-    Sleep 25
+    Sleep 50
 
+    ; Using writeString() is buggy with this method, so we instead convert the character
+    ; to bytes and then write it.
     dqx.writeBytes(startAddress, convertStrToHex(A_LoopField))
     startAddress += 3
+    dqx.writeBytes(startAddress, "00")
 
     ; For phrases that use all 20 available JP characters in the chatbox,
     ; we need to arrow over to the left once, and then back to the right to
     ; get it to properly send.
     if (A_Index = 20) {
       Send {Left}
-      Sleep 25
+      Sleep 50
       Send {Right}
     }
   }
-
 }

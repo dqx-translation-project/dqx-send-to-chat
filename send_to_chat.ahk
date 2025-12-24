@@ -19,7 +19,7 @@ FileDelete, .\send_to_chat_old.exe
 ;
 ; Versioning scheme:
 ;   vX.X.X.Y => v = static; X.X.X = DQX version; Y = Send to Chat revision (starts at 0)
-global scriptVer := "v7.6.0.2"
+global scriptVer := "v7.6.1.0"
 
 ; These will change on patches
 ; How do you find this?
@@ -35,7 +35,7 @@ global scriptVer := "v7.6.0.2"
 ; * Do the above chat tasks you just did again (type, edit, scan)
 ; * This should give you a list of pointers that are pointing at the chat buffer
 ; * Update the address + pointers below and test
-global chatAddress := 0x01C55C34
+global chatAddress := 0x01C57C34
 global chatOffsets := [0x8, 0x8C, 0x8, 0x90, 0x2DC, 0x0]
 
 ;=== Auto update ===============================================

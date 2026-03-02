@@ -19,7 +19,7 @@ FileDelete, .\send_to_chat_old.exe
 ;
 ; Versioning scheme:
 ;   vX.X.X.Y => v = static; X.X.X = DQX version; Y = Send to Chat revision (starts at 0)
-global scriptVer := "v7.6.2.0"
+global scriptVer := "v7.6.3.0"
 
 ; These will change on patches
 ; How do you find this?
@@ -110,11 +110,12 @@ questDict := { "Asfeld: Chapter 5": "わかめ かめかめ うみのさち"
              , "Quest 761": "うんめいとは"
              , "Quest 833": "おなかいっぱい"
              , "Quest 839": "オオカミがでたぞー！"
-             , "Seasonal: Christmas Quest": "メリークリスマス"
-             , "Seasonal: Halloween Quest": "トリックオアトリート"
+             , "Seasonal: Christmas Phrase": "メリークリスマス"
+             , "Seasonal: Halloween Phrase": "トリックオアトリート"
              , "Seasonal: Star Festival": "だいすき"
-             , "Seasonal: Valentine's Quest": "ハッピーバレンタイン"
-             , "Seasonal: White Day Quest": "ハッピーホワイトデー"
+             , "Seasonal: Valentine's Phrase": "ハッピーバレンタイン"
+             , "Seasonal: White Day Phrase": "ハッピーホワイトデー"
+             , "Seasonal: White Day 2026 Quest": "うけとってください"
              , "Version 3.2": "おままごとしましょー"
              , "Version 3.3 (1)": "にんげん"
              , "Version 3.3 (2)": "われワギにちかう"

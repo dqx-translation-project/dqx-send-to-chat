@@ -19,7 +19,7 @@ FileDelete, .\send_to_chat_old.exe
 ;
 ; Versioning scheme:
 ;   vX.X.X.Y => v = static; X.X.X = DQX version; Y = Send to Chat revision (starts at 0)
-global scriptVer := "v7.6.3.0"
+global scriptVer := "v7.6.5.0"
 
 ; These will change on patches
 ; How do you find this?
@@ -35,8 +35,8 @@ global scriptVer := "v7.6.3.0"
 ; * Do the above chat tasks you just did again (type, edit, scan)
 ; * This should give you a list of pointers that are pointing at the chat buffer
 ; * Update the address + pointers below and test
-global chatAddress := 0x01C5B988
-global chatOffsets := [0x364, 0x104, 0x0, 0x10, 0x0, 0x10]
+global chatAddress := 0x01C8A6CC
+global chatOffsets := [0x4C, 0x44, 0x8, 0x1E8, 0x2DC, 0x0]
 
 ;=== Auto update ===============================================
 oWhr := ComObjCreate("WinHttp.WinHttpRequest.5.1")
@@ -110,6 +110,7 @@ questDict := { "Asfeld: Chapter 5": "わかめ かめかめ うみのさち"
              , "Quest 761": "うんめいとは"
              , "Quest 833": "おなかいっぱい"
              , "Quest 839": "オオカミがでたぞー！"
+             , "Quest 844": "スエル"
              , "Seasonal: Christmas Phrase": "メリークリスマス"
              , "Seasonal: Halloween Phrase": "トリックオアトリート"
              , "Seasonal: Star Festival": "だいすき"
